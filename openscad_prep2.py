@@ -3,7 +3,7 @@ import sys
 import bpy
 
 # Adjust these two parameters to your liking:
-VOXEL_SIZE = 0.3    # Target edge length (smaller = finer mesh)
+VOXEL_SIZE = 0.5    # Target edge length (smaller = finer mesh)
 SMOOTH_REPEAT = 15   # Edge rounding strength (higher = rounder edges)
 
 
@@ -76,14 +76,15 @@ def process_stl_file(input_file, output_file):
 
 
 def main():
+    global VOXEL_SIZE
     # Parse CLI arguments passed after '--'
     cli_args = []
     if "--" in sys.argv:
         cli_args = sys.argv[sys.argv.index("--") + 1:]
-
     if cli_args:
         input_file = cli_args[0]
         output_file = cli_args[1] if len(cli_args) > 1 else "parturi_smoothed.stl"
+        if len(cli_args)>2: VOXEL_SIZE = float(cli_args[2])
         process_stl_file(input_file, output_file)
     elif bpy.app.background:
         # Running headless without explicit arguments

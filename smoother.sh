@@ -7,40 +7,17 @@ set -euo pipefail
 # and save an STL mesh using openscad_prep2.py.
 #
 # Usage:
-#   ./smoother.sh [input_stl] [output_stl]
+#   ./smoother.sh [input_stl] [output_stl] [voxel_size]
 #
-# Examples:
-#   ./smoother.sh
-#       Imports parturi.stl and writes parturi_smoothed.stl
-#
-#   ./smoother.sh parturi.stl parturi.stl
-#       Overwrites parturi.stl in-place
-#
-#   ./smoother.sh input.stl output.stl
-#       Smooths input.stl and saves to output.stl
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_SCRIPT="$SCRIPT_DIR/openscad_prep2.py"
 
 # Default input to parturi.stl
-if [ -n "${1:-}" ]; then
     INPUT_FILE="$1"
-elif [ -f "parturi.stl" ]; then
-    INPUT_FILE="parturi.stl"
-else
-    INPUT_FILE="$SCRIPT_DIR/parturi.stl"
-fi
-
-# Default output: if 2nd arg provided, use it; otherwise save as <name>_smoothed.stl
-if [ -n "${2:-}" ]; then
     OUTPUT_FILE="$2"
-else
-    DIRNAME="$(dirname "$INPUT_FILE")"
-    BASENAME="$(basename "$INPUT_FILE")"
-    FILENAME="${BASENAME%.*}"
-    OUTPUT_FILE="${DIRNAME}/${FILENAME}_smoothed.stl"
-fi
+    VOXEL_SIZE="$3"
 
 if [ ! -f "$INPUT_FILE" ]; then
     echo "Error: Input STL file '$INPUT_FILE' not found!" >&2
@@ -56,10 +33,13 @@ echo "============================================="
 echo "Smoothing STL with Blender"
 echo "  Input:  $INPUT_FILE"
 echo "  Output: $OUTPUT_FILE"
+echo "  VOXEL_SIZE: $VOXEL_SIZE"
 echo "============================================="
 
-blender --background --python "$PYTHON_SCRIPT" -- "$INPUT_FILE" "$OUTPUT_FILE"
+blender --background --python "$PYTHON_SCRIPT" -- "$INPUT_FILE" "$OUTPUT_FILE" "$VOXEL_SIZE"
 
 echo "============================================="
 echo "Successfully generated: $OUTPUT_FILE"
 echo "============================================="
+
+stl-viewer $OUTPUT_FILE
