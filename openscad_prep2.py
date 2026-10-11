@@ -19,13 +19,8 @@ def import_stl(filepath):
 
 def export_stl(filepath):
     """Export STL file across Blender versions (4.0+/5.x vs older)."""
-    if hasattr(bpy.ops.wm, "stl_export"):
-        bpy.ops.wm.stl_export(filepath=filepath)
-    elif hasattr(bpy.ops, "export_mesh") and hasattr(bpy.ops.export_mesh, "stl"):
-        bpy.ops.export_mesh.stl(filepath=filepath)
-    else:
-        raise RuntimeError("No STL export operator found in Blender.")
-
+    try:    bpy.ops.wm.stl_export(filepath=filepath)
+    except:   bpy.ops.export_mesh.stl(filepath=filepath)
 
 def smooth_mesh(obj):
     """Apply voxel remesh and smooth modifier to the given mesh object."""
