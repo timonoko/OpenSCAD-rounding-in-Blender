@@ -83,8 +83,8 @@ def main():
         cli_args = sys.argv[sys.argv.index("--") + 1:]
     if cli_args:
         input_file = cli_args[0]
-        output_file = cli_args[1] if len(cli_args) > 1 else "parturi_smoothed.stl"
-        if len(cli_args)>2: VOXEL_SIZE = float(cli_args[2])
+        output_file = cli_args[1]
+        VOXEL_SIZE = float(cli_args[2])
         process_stl_file(input_file, output_file)
     elif bpy.app.background:
         # Running headless without explicit arguments
